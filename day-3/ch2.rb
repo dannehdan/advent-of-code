@@ -20,3 +20,4 @@ class Binary
     # @input = File.readlines("./day-3/input.txt").map(&:chomp)
     @input = $test
   end
+  
