@@ -501,6 +501,19 @@
   [[698, 858], [389, 858]]
 ]
 
+# @input = [
+#   [[0, 9], [5, 9]],
+#   [[8, 0], [0, 8]],
+#   [[9, 4], [3, 4]],
+#   [[2, 2], [2, 1]],
+#   [[7, 0], [7, 4]],
+#   [[6, 4], [2, 0]],
+#   [[0, 9], [2, 9]],
+#   [[3, 4], [1, 4]],
+#   [[0, 0], [8, 8]],
+#   [[5, 5], [8, 2]]
+# ]
+
 @output = []
 
 def set_output
@@ -519,16 +532,20 @@ def print_array
       x = line[0][0]
       y2 = line[1][1]
       y1 = line [0][1]
-      modify_output(x, x, y1, y2)
+      modify_linear(x, x, y1, y2)
     # y co-ords same
     elsif line[0][1] == line [1][1]
       y = line[0][1]
       x2 = line [1][0]
       x1 = line[0][0]
-      modify_output(x1, x2, y, y)
+      modify_linear(x1, x2, y, y)
     else
-      # neither same (ie diagonal line)
-      next
+      modify_diagonal(
+        line[0][0],
+        line[1][0],
+        line[0][1],
+        line[1][1]
+      )
     end
   end
 end
@@ -537,7 +554,7 @@ def score_output
   p @output.flatten.count { |x| x > 1 }
 end
 
-def modify_output(x1, x2, y1, y2)
+def modify_linear(x1, x2, y1, y2)
   if x1 == x2
     if y1 >= y2
       (y2..y1).map { |i| @output[0][x1][i] += 1 }
@@ -548,6 +565,32 @@ def modify_output(x1, x2, y1, y2)
     (x2..x1).map { |i| @output[0][i][y1] += 1 }
   else
     (x1..x2).map { |i| @output [0][i][y1] += 1 }
+  end
+end
+
+def modify_diagonal(x1, x2, y1, y2)
+  p "#{x1}, #{y1}, #{x2}, #{y2}"
+  if x1 <= x2
+    newx1 = x1
+    newx2 = x2
+    newy1 = y1
+    newy2 = y2
+  else
+    newx1 = x2
+    newx2 = x1
+    newy1 = y2
+    newy2 = y1
+  end
+  if newy1 >= newy2
+    (newx1..newx2).each do |i|
+      @output[0][i][newy1] += 1
+      newy1 -= 1
+    end
+  else
+    (newx1..newx2).each do |i|
+      @output[0][i][newy1] += 1
+      newy1 += 1
+    end
   end
 end
 
