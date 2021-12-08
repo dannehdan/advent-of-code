@@ -2,13 +2,18 @@
 @input = File.read('./day-7/input.txt').split(',').map(&:to_i)
 
 def run
-  fuel = 0
-  sorted = @input.sort
-  median = sorted[sorted.length / 2]
-  @input.each do |value|
-    fuel += (value - median).abs
+  fuel_test = []
+  mean = (@input.sum / @input.count)
+  stdev = Math.sqrt(@input.sum / (@input.count - 1)).floor
+  (mean - stdev..mean + stdev).each do |x|
+    fuel = 0
+    @input.each do |value|
+      n = (value - x).abs
+      fuel += (n * (n + 1)) / 2
+    end
+    fuel_test << fuel
   end
-  p fuel
+  p fuel_test.min
 end
 
 run
